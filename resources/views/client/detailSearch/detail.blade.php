@@ -23,39 +23,67 @@
       margin-left: auto;
       /* Đẩy form sang bên phải */
     }
+    .input-group-btn {
+            display: flex;
+        }
+        .btn {
+            border: 1px solid #ccc;
+        }
+        .carousel-inner img {
+    width: 100%;
+    height: 800px; /* Đặt chiều cao cố định */
+    object-fit: cover; /* Đảm bảo ảnh không bị kéo dài hoặc cắt bớt không đồng đều */
+}
+
+.carousel-inner img {
+    width: 100%;
+    height: 800px; /* Đặt chiều cao cố định */
+    object-fit: cover; /* Đảm bảo ảnh không bị kéo dài hoặc cắt bớt không đồng đều */
+}
+
+
   </style>
+
   <!-- Shop Detail Start -->
   <div class="container-fluid py-5">
     <div class="row px-xl-5">
-      <div class="col-lg-5 pb-5">
-        <!-- List img -->
-        <div id="product-carousel" class="carousel slide" data-ride="carousel">
-      @php
-          $tt = $sp['price'] - (($sp['price']  * $sp['discount']) / 100);
-      @endphp
-           <div class="carousel-inner border">
-          <div class="carousel-item active">
-            <img class="w-100 h-100" src="{{ asset('upload/'.$sp->img)  }}" id="x" />
-          </div>
-          <div class="carousel-item">
-            <img class="w-100 h-100" src="{{ asset('upload/'.$sp->img)  }}" alt="Image" />
-          </div>
-          <div class="carousel-item">
-            <img class="w-100 h-100" src="{{ asset('upload/'.$sp->img)  }}" id="x" />
-          </div>
-          <div class="carousel-item">
-            <img class="w-100 h-100" src="{{ asset('upload/'.$sp->img)  }}" id="x" />
-          </div>
+        <div class="col-lg-5 pb-5">
+            <!-- Product Carousel -->
+            <div id="product-carousel" class="carousel slide" data-ride="carousel" data-interval="3000">
+                @php
+                $tt = $sp['price'] - (($sp['price']  * $sp['discount']) / 100);
+                     @endphp
+                <div class="carousel-inner border">
+                    <!-- Main Product Image -->
+                    <div class="carousel-item active">
+                        <img class="d-block w-100" src="{{ asset('upload/' . $sp->img) }}" alt="Main Product Image" />
+                    </div>
+
+                    <!-- Variant Images -->
+                    @foreach ($sp->productVariants as $variant)
+                        @php
+                            $imagePath = $variant->image;
+                            $imageUrl = asset($imagePath);
+                        @endphp
+                        <div class="carousel-item">
+                            <img class="d-block w-100" src="{{ $imageUrl }}" alt="Variant Image" />
+                        </div>
+                    @endforeach
+                </div>
+
+                <!-- Carousel Controls -->
+                <a class="carousel-control-prev" href="#product-carousel" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#product-carousel" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
         </div>
 
-          <a class="carousel-control-prev" href="#product-carousel" data-slide="prev">
-            <i class="fa fa-2x fa-angle-left text-dark"></i>
-          </a>
-          <a class="carousel-control-next" href="#product-carousel" data-slide="next">
-            <i class="fa fa-2x fa-angle-right text-dark"></i>
-          </a>
-        </div>
-      </div>
+
 
       <!-- Product information -->
       <div class="col-lg-7 pb-5">
@@ -71,89 +99,75 @@
             <small class="fas fa-star-half-alt"></small>
             <small class="far fa-star"></small>
           </div>
-          <small class="pt-1">(50 Reviews)</small>
+          <small class="pt-1">{{ $sp->view }} Views</small>
         </div>
-        <h3 class="font-weight-semi-bold mb-4"> {{ number_format($tt, 0, ",", ".")  }} VND</h3>
-        <p class="mb-4">
-        <h2><del>{{ number_format($sp->price,0,',','.') }} VNĐ</del></h2>
+        <h3 class="font-weight-semi-bold mb-4" style="display: inline-block; margin-right: 10px;">{{ number_format($tt, 0, ",", ".")  }} $</h3>
+        <h2 style="display: inline-block;"><del>{{ number_format($sp->price,0,',','.') }} $</del></h2>
+<div class="">
+      <p id="quantity-display">Quantity: {{ $sp->quantity }}</p>
+</div>
+  <!-- Size Selection -->
+<div class="d-flex mb-3">
+    <p class="text-dark font-weight-medium mb-0 mr-3">Sizes:</p>
+    <select class="form-select" id="size-select" name="size">
+        @foreach ($sizes as $size)
+            <option value="{{ $size->id }}">{{ $size->name }}</option>
+        @endforeach
+    </select>
+</div>
 
-        </p>
+   <!-- Color Selection -->
+<div class="d-flex mb-4">
+    <p class="text-dark font-weight-medium mb-0 mr-3">Colors:</p>
+    <form id="color-form">
+        @foreach ($colors as $color)
+            <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" class="custom-control-input" id="color-{{ $loop->index }}" name="color" value="{{ $color->id }}" />
+                <label class="custom-control-label" for="color-{{ $loop->index }}">{{ $color->name }}</label>
+            </div>
+        @endforeach
+    </form>
+</div>
 
-        <!-- Size -->
-        <div class="d-flex mb-3">
-          <p class="text-dark font-weight-medium mb-0 mr-3">Sizes:</p>
-          <select class="form-select" name="id_size">
-            {{-- <?php
-            if (isset($dss)) {
-              foreach ($dss as $ds) {
-                if ($ds['id_size'] == $id_size) $s = "selected";
-                else $s = "";
-                echo ' <div class="custom-control custom-radio custom-control-inline">
-                <option value="' . $ds['id_size'] . '" ' . $s . '>' . $ds['name_size'] . '</option>
-              </div>';
-              }
-            } else {
-              // Xử lý khi biến $dss chưa được khởi tạo
-            }
-            ?> --}}
-            <!-- <div class="custom-control custom-radio custom-control-inline">
-              <input type="radio" class="custom-control-input" id="size-2" name="size" />
-              <label class="custom-control-label" for="size-2">S</label>
-            </div> -->
-          </select>
+        <!-- Product Image Carousel -->
+<div id="product-carousel" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner" id="carousel-inner">
+        <!-- Dynamic images will be inserted here by JavaScript -->
+    </div>
+    <a class="carousel-control-prev" href="#product-carousel" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#product-carousel" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+
+        <div class="container py-3">
+            <form action="{{ route('cart.addCart') }}" method="post" class="d-flex align-items-center" id="add-to-cart-form">
+                @csrf
+                <div class="d-flex align-items-center me-4">
+                    <h6 class="mb-0 me-2">Qty:</h6>
+                    <div class="input-group" style="width: 130px;">
+                        <button class="btn btn-outline-primary" type="button" id="btn-minus">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                        <input type="text" class="form-control text-center" value="1" name="quantity" id="quantity-input">
+                        <button class="btn btn-outline-primary" type="button" id="btn-plus">
+                            <i class="fa fa-plus"></i>
+                        </button>
+                    </div>
+                    <input type="hidden" name="productId" value="{{ $sp->id }}">
+                    <input type="hidden" name="size_id" id="selected-size-id">
+                     <input type="hidden" name="color_id" id="selected-color-id">
+                </div>
+                <button type="submit" class="btn btn-primary ms-4">Add to Cart</button>
+            </form>
         </div>
 
-        <!-- Color -->
-        <div class="d-flex mb-4">
-          <p class="text-dark font-weight-medium mb-0 mr-3">Colors:</p>
-          <form>
-            <div class="custom-control custom-radio custom-control-inline">
-              <input type="radio" class="custom-control-input" id="color-1" name="color" />
-              <label class="custom-control-label" for="color-1">Black</label>
-            </div>
-            <div class="custom-control custom-radio custom-control-inline">
-              <input type="radio" class="custom-control-input" id="color-2" name="color" />
-              <label class="custom-control-label" for="color-2">White</label>
-            </div>
-            <div class="custom-control custom-radio custom-control-inline">
-              <input type="radio" class="custom-control-input" id="color-3" name="color" />
-              <label class="custom-control-label" for="color-3">Red</label>
-            </div>
-            <div class="custom-control custom-radio custom-control-inline">
-              <input type="radio" class="custom-control-input" id="color-4" name="color" />
-              <label class="custom-control-label" for="color-4">Blue</label>
-            </div>
-            <div class="custom-control custom-radio custom-control-inline">
-              <input type="radio" class="custom-control-input" id="color-5" name="color" />
-              <label class="custom-control-label" for="color-5">Green</label>
-            </div>
-          </form>
-        </div>
-        <div class="d-flex align-items-center mb-4 pt-2">
-          <div class="input-group quantity mr-3" style="width: 130px">
-            <div class="input-group-btn">
-              <button class="btn btn-primary btn-minus">
-                <i class="fa fa-minus"></i>
-              </button>
-            </div>
-            <input type="text" class="form-control bg-secondary text-center" value="1" />
-            <div class="input-group-btn">
-              <button class="btn btn-primary btn-plus">
-                <i class="fa fa-plus"></i>
-              </button>
-            </div>
-          </div>
-          <form action="addtocart" method="post">
-            <input type="hidden" name="id" value="{{$sp->id}}">
-                <input type="hidden" name="name" value="{{$sp->name}}">
-                <input type="hidden" name="img" value="{{$sp->img}}">
-                <input type="hidden" name="price" value="{{$sp->price}}">
-            <input type="submit" value="Add To Cart" class="btn btn-sm text-dark p-0" name="addtocart"><i class="fas fa-shopping-cart text-primary mr-1"></i>
-        </form>
-          <!-- <a href="?act=addtocart"> <button class="btn btn-primary px-3">
-              <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
-            </button></a> -->
-        </div>
+        <p>Short Description:</p>
+        {{ $sp->description }}
         <div class="d-flex pt-2">
           <p class="text-dark font-weight-medium mb-0 mr-2">Share on:</p>
           <div class="d-inline-flex">
@@ -187,7 +201,7 @@
           <div class="tab-pane fade show active" id="tab-pane-1">
             <h4 class="mb-3">Product Description</h4>
             <p>
-              {{ $sp->description }}
+              {!! $sp->content !!}
             </p>
           </div>
 
@@ -233,14 +247,15 @@
             </div>
           </div>
           <div class="card-footer d-flex justify-content-between bg-light border">
-            <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-            <form action="addtocart" method="post">
+            <a href="{{ route('productDetail', $s->id) }}" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+            <form action="{{ route('cart.addCart') }}" method="post">
               @csrf
-              <input type="hidden" name="id" value="{{ $s->id }}">
-              <input type="hidden" name="name" value="{{ $s->name }}">
+              <input type="hidden" name="quantity" value="1">
+              <input type="hidden" name="productId" value="{{ $s->id }}">
+              {{-- <input type="hidden" name="name" value="{{ $s->name }}">
               <input type="hidden" name="img" value="{{ $s->img }}">
-              <input type="hidden" name="price" value="{{ $s->price }}">
-              <button type="submit" class="btn btn-sm text-dark p-0" name="addtocart"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</button>
+              <input type="hidden" name="price" value="{{ $s->price }}"> --}}
+              <button class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</button>
             </form>
           </div>
         </div>
@@ -249,6 +264,83 @@
     </div>
   </div>
   <!-- Products End -->
+  <script>
+    $('#size-select, input[name="color"]').on('change', function() {
+        $('#selected-size-id').val($('#size-select').val());
+        $('#selected-color-id').val($('input[name="color"]:checked').val());
+    });
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        function updateCarousel() {
+            var sizeId = $('#size-select').val();
+            var colorId = $('input[name="color"]:checked').val();
 
+            if (sizeId && colorId) {
+                $.ajax({
+                    url: '{{ route('variant.details') }}',
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        size_id: sizeId,
+                        color_id: colorId
+                    },
+                    success: function(response) {
+                        var $carouselInner = $('#carousel-inner');
+                        var $quantityDisplay = $('#quantity-display');
+
+                        // Cập nhật carousel
+                        $carouselInner.empty();
+                        if (response.image) {
+                            $carouselInner.append(`
+                                <div class="carousel-item active">
+                                    <img class="d-block w-100" src="${response.image}" alt="Variant Image" />
+                                </div>
+                            `);
+                        } else {
+                            $carouselInner.html('<p>No images available</p>');
+                        }
+
+                        // Cập nhật số lượng
+                        $quantityDisplay.text('Quantity: ' + response.quantity);
+                    }
+                });
+            }
+        }
+
+        $('#size-select, input[name="color"]').on('change', updateCarousel);
+
+        // Initialize carousel on page load
+        updateCarousel();
+    });
+</script>
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const quantityInput = document.getElementById('quantity-input');
+        const btnPlus = document.getElementById('btn-plus');
+        const btnMinus = document.getElementById('btn-minus');
+
+        btnPlus.addEventListener('click', function() {
+            quantityInput.value = parseInt(quantityInput.value) + 1;
+        });
+
+        btnMinus.addEventListener('click', function() {
+            if (parseInt(quantityInput.value) > 1) {
+                quantityInput.value = parseInt(quantityInput.value) - 1;
+            }
+        });
+    });
+    //xu ly neu nguoi dung nhap so am
+    $('#quantity-input').on('change', function(){
+             var value = parseInt($(this).val(), 10);
+             if (isNaN(value) || value < 1) {
+                 alert('Quantity must be a number >= 1')
+                 $(this).val(1);
+             }
+    });
+</script>
 
 @endsection

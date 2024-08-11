@@ -42,9 +42,10 @@
                             <i class="fas fa-heart text-primary"></i>
                             <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">0</span>
                         </a>
-                        <a href="viewCart" class="btn px-0 ml-3">
+                        <a href="{{ route('cart.listCart') }}" class="btn px-0 ml-3">
                             <i class="fas fa-shopping-cart text-primary"></i>
-                            <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">0</span>
+                            <span class="badge text-secondary border border-secondary rounded-circle"
+                            style="padding-bottom: 2px;">{{ session('cart') ? count(session('cart')) : '0' }}</span>
                         </a>
                         @if(auth()->check())
                             <a href="{{ route('account') }}" class="btn px-0">
@@ -57,7 +58,7 @@
                                 <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;"></span>
                             </a>
                         @endif
-                        <a href="mybill" class="btn px-0">
+                        <a href="{{ route('orders.index') }}" class="btn px-0">
                             <i class="fas fa-file-invoice-dollar text-primary"></i>
                             <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">0</span>
                         </a>

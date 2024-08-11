@@ -13,12 +13,24 @@
       <div class="card mb-4">
 
         {{-- hien thi tb success --}}
-        
+
         <div class="card-header">
           <i class="fas fa-table me-1"></i>
           List categories
         </div>
         <div class="card-body">
+                        {{-- Hiển thị thông báo --}}
+        @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
           <table id="datatablesSimple">
             <thead>
               <tr>

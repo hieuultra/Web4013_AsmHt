@@ -6,6 +6,9 @@
  <link href="{{ asset('assets/admin/libs/quill/quill.core.js') }}" rel="stylesheet" type="text/css" />
  <link href="{{ asset('assets/admin/libs/quill/quill.snow.css') }}" rel="stylesheet" type="text/css" />
  <link href="{{ asset('assets/admin/libs/quill/quill.bubble.css') }}" rel="stylesheet" type="text/css" />
+ {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> --}}
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css">
+
 
 <div class="container-fluid mt-4 px-4">
     <h1 class="mt-4">Add product</h1>
@@ -128,21 +131,45 @@
 
                     <div class="mb-3">
                         <label class="form-label">Album Image</label>
+                        <i id="add-row" class="mdi mdi-plus text-muted fs-18 rounded-2 border ms-3 p-1" style="cursor: pointer"></i>
                         <table class="table align-middle table-nowrap mb-0">
-                               <tbody>
+                               <tbody id="image-table-body">
                                 <tr>
                                     <td class="d-flex align-items-center">
                                         <img id="preview_0" src="https://cdn.icon-icons.com/icons2/510/PNG/512/image_icon-icons.com_50366.png"
                                         class="me-3" alt="Image Product" style="width:50px;">
-                                        <input type="file" class="form-control" name="img" onchange="showImage(event)">
+                                        <input type="file" class="form-control" name="list_img[id_0]" onchange="previewImage(this, 0)">
                                     </td>
                                     <td>
-                                        <i class="mdi mdi-delete text-muted fs-18 rounded-2 border p-1"></i>
+                                        <i class="mdi mdi-delete text-muted fs-18 rounded-2 border p-1"
+                                         style="cursor: pointer" onclick="removeRow(this)"></i>
                                     </td>
                                 </tr>
                                </tbody>
                         </table>
                     </div>
+
+
+                    {{-- bien the --}}
+                    <div class="mb-3">
+                        <h5>Product Variants</h5>
+                        <table class="table align-middle table-nowrap mb-0" id="variant-table">
+                            <thead>
+                                <tr>
+                                    <th>Size</th>
+                                    <th>Color</th>
+                                    <th>Quantity</th>
+                                    <th>Image</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Add rows dynamically using JavaScript -->
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn btn-primary mt-3" id="add-variant">Add Variant</button>
+                    </div>
+
 
                 </div>
             </div>
@@ -159,6 +186,79 @@
    <script src="{{ asset('assets/admin/libs/quill/quill.core.js') }}"></script>
    <script src="{{ asset('assets/admin/libs/quill/quill.min.js') }}"></script>
 
+{{-- /bien the --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let variantIndex = 0;
+
+        document.getElementById('add-variant').addEventListener('click', function() {
+            const row = `
+                <tr>
+                    <td>
+                        <select class="form-select" name="sizes[]">
+                            <option value="">Select Size</option>
+                            @foreach($sizes as $size)
+                            <option value="{{ $size->id }}">{{ $size->name }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <select class="form-select" name="colors[]">
+                            <option value="">Select Color</option>
+                            @foreach($colors as $color)
+                            <option value="{{ $color->id }}">{{ $color->name }}</option>
+                            @endforeach
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" name="quantities[]" placeholder="Quantity">
+                    </td>
+                    <td>
+                        <input type="file" class="form-control" name="variant_images[${variantIndex}]" onchange="previewVariantImage(this, ${variantIndex})">
+                        <img id="variant-preview_${variantIndex}" src="https://cdn.icon-icons.com/icons2/510/PNG/512/image_icon-icons.com_50366.png" style="width:50px; display: block; margin-top: 5px;">
+                    </td>
+                    <td>
+                        <i class="mdi mdi-delete text-muted fs-18 rounded-2 border p-1" style="cursor: pointer" onclick="removeVariantRow(this)"></i>
+                    </td>
+                </tr>
+            `;
+            document.querySelector('#variant-table tbody').insertAdjacentHTML('beforeend', row);
+            variantIndex++;
+        });
+
+        window.previewVariantImage = function(input, index) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.querySelector(`#variant-preview_${index}`).src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        };
+
+        window.removeVariantRow = function(button) {
+            button.closest('tr').remove();
+        };
+    });
+</script>
+
+
+
+   <script>
+    //hien thi image khi add
+    function showImage(event){
+        const imgPro = document.getElementById('imgPro');
+        const file =  event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = function(){
+            imgPro.src = reader.result;
+            imgPro.style.display = "block";
+        }
+        if(file){
+            reader.readAsDataURL(file);
+        }
+    }
+  </script>
+
+   <!-- content -->
    <script>
     document.addEventListener('DOMContentLoaded', function(){
         var quill = new Quill("#quill-editor", {
@@ -174,19 +274,44 @@
     });
 })
    </script>
-<script>
-    //hien thi image khi add
-    function showImage(event){
-        const imgPro = document.getElementById('imgPro');
-        const file =  event.target.files[0];
-        const reader = new FileReader();
-        reader.onload = function(){
-            imgCate.src = reader.result;
-            imgCate.style.display = "block";
-        }
-        if(file){
-            reader.readAsDataURL(file);
-        }
-    }
-  </script>
+
+   <!-- add album anh -->
+   <script>
+document.addEventListener('DOMContentLoaded', function(){
+        var rowCount = 1;
+      document.getElementById('add-row').addEventListener('click', function(){
+        var tableBody = document.getElementById('image-table-body');
+        var newRow= document.createElement('tr');
+        newRow.innerHTML= ` <td class="d-flex align-items-center">
+                            <img id="preview_${rowCount}" src="https://cdn.icon-icons.com/icons2/510/PNG/512/image_icon-icons.com_50366.png"
+                            class="me-3" alt="Image Product" style="width:50px;">
+                            <input type="file" class="form-control" name="list_img[id_${rowCount}]" onchange="previewImage(this, ${rowCount})">
+                        </td>
+                        <td>
+                            <i class="mdi mdi-delete text-muted fs-18 rounded-2 border p-1"
+                            style="cursor: pointer" onclick="removeRow(this)"></i>
+                        </td>`;
+                        tableBody.appendChild(newRow);
+                        rowCount++;
+      })
+                    });
+                    //change image cua tung item
+                    function previewImage(input, rowIndex){
+                        if(input.files && input.files[0]){
+                            const reader = new FileReader();
+
+               reader.onload = function(e){
+               document.getElementById(`preview_${rowIndex}`).setAttribute('src', e.target.result);
+                   }
+                   reader.readAsDataURL(input.files[0]);
+
+                        }
+                    }
+                    function removeRow(item){
+                        var row = item.closest('tr');
+                        row.remove();
+                    }
+
+   </script>
+
 @endsection

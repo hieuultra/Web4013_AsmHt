@@ -15,6 +15,17 @@
 
                     <div class="card">
                         <div class="card-body">
+                            @if (session('success'))
+                            <div class="alert alert-success">
+                                {{ session('success') }}
+                            </div>
+                        @endif
+
+                        @if (session('error'))
+                            <div class="alert alert-danger">
+                                {{ session('error') }}
+                            </div>
+                        @endif
                             <div class="m-sm-4">
                                 <form action="{{ route('editAcc') }}" method="post" enctype="multipart/form-data">
                                     @csrf

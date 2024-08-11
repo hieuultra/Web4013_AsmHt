@@ -69,18 +69,19 @@
        </div>
        <div class="card-footer d-flex justify-content-between bg-light border">
          <a href="{{ route('productDetail', $s->id) }}" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-         <form action="addtocart" method="post">
+         <form action="{{ route('cart.addCart') }}" method="post">
             @csrf
-            <input type="hidden" name="id" value="{{ $s->id }}">
-            <input type="hidden" name="name" value="{{ $s->name }}">
+            <input type="hidden" name="quantity" value="1">
+            <input type="hidden" name="productId" value="{{ $s->id }}">
+            {{-- <input type="hidden" name="name" value="{{ $s->name }}">
             <input type="hidden" name="img" value="{{ $s->img }}">
-            <input type="hidden" name="price" value="{{ $s->price }}">
-            <button type="submit" class="btn btn-sm text-dark p-0" name="addtocart"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</button>
+            <input type="hidden" name="price" value="{{ $s->price }}"> --}}
+            <button class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</button>
           </form>
        </div>
      </div>
    </div>
-   @endforeach
+    @endforeach
     </div>
 </div>
 <!-- Products End -->

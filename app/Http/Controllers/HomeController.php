@@ -12,16 +12,16 @@ class HomeController extends Controller
     function index()
     {
         $newProducts = Product::newProducts(8)->get();
+
         $bestsellerProducts = Product::bestsellerProducts(6)->get();
+        
         $instockProducts = Product::instockProducts(3)->get();
-        $categories = Category::orderBy('name', 'asc')->get();
+
+        // Kết hợp danh mục và số lượng sản phẩm
+        $categories = Category::withCount('products')->orderBy('name', 'asc')->get();
+
         return view('client.home.home', compact('categories', 'newProducts', 'bestsellerProducts', 'instockProducts'));
     }
-    // public function header()
-    // {
-    //     $categories = Category::orderBy('name', 'asc')->get();
-    //     return view('header', compact('categories'));
-    // }
     public function productHome()
     {
         $newestProducts = Product::orderBy('created_at', 'desc')->take(6)->get();

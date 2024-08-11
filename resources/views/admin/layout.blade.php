@@ -83,6 +83,23 @@
                     </div>
                 </a>
 
+                  <!-- bill -->
+      <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsebill" aria-expanded="false" aria-controls="collapseLayouts">
+        <div class="sb-nav-link-icon">
+          <i class="fas fa-columns"></i>
+        </div>
+        Bill
+        <div class="sb-sidenav-collapse-arrow">
+          <i class="fas fa-angle-down"></i>
+        </div>
+      </a>
+
+      <div class="collapse" id="collapsebill" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+        <nav class="sb-sidenav-menu-nested nav">
+          <a class="nav-link" href="{{ route('admin.bills.index') }}">List Bill</a>
+        </nav>
+      </div>
+
                    <!-- account -->
     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAccount" aria-expanded="false" aria-controls="collapseLayouts">
         <div class="sb-nav-link-icon">
@@ -96,8 +113,8 @@
 
       <div class="collapse" id="collapseAccount" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
         <nav class="sb-sidenav-menu-nested nav">
-          <a class="nav-link" href="?act=list_account">List account</a>
-          <a class="nav-link" href="?act=add_acc">Add account</a>
+          <a class="nav-link" href="{{ route('admin.account.accountList') }}">List account</a>
+          <a class="nav-link" href="{{ route('admin.account.viewAccAdd') }}">Add account</a>
         </nav>
       </div>
 
@@ -169,23 +186,6 @@
       <div class="collapse" id="collapsefb" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
         <nav class="sb-sidenav-menu-nested nav">
           <a class="nav-link" href="?act=list_fb">List Feedback</a>
-        </nav>
-      </div>
-
-      <!-- bill -->
-      <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsebill" aria-expanded="false" aria-controls="collapseLayouts">
-        <div class="sb-nav-link-icon">
-          <i class="fas fa-columns"></i>
-        </div>
-        Bill
-        <div class="sb-sidenav-collapse-arrow">
-          <i class="fas fa-angle-down"></i>
-        </div>
-      </a>
-
-      <div class="collapse" id="collapsebill" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-        <nav class="sb-sidenav-menu-nested nav">
-          <a class="nav-link" href="?act=list_bill">List Bill</a>
         </nav>
       </div>
             </div>

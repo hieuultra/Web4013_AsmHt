@@ -38,12 +38,29 @@ class Product extends Model
         return $this->belongsTo(Category::class); //$this đại diện cho thể hiện hiện tại của lớp Product
         //Phương thức belongsTo của Eloquent ORM được sử dụng để xác định mối quan hệ "belongs to" (thuộc về) giữa mô hình Product và mô hình Category.
     }
+    public function imageProduct()
+    {
+        return $this->hasMany(ImageProduct::class);
+    }
+    public function order_detail()
+    {
+        return $this->hasMany(order_detail::class);
+    }
+    public function productVariants()
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
     public function scopeNewProducts($query, $limit) //định nghĩa một query scope có tên là newProducts.
     //Query scope là một cách để thêm điều kiện truy vấn vào Eloquent query một cách dễ dàng.
     //khi định nghĩa một query scope trong model, tham số đầu tiên của phương thức scope luôn là một đối tượng query.
     //$query trong scope là một đối tượng truy vấn Eloquen
     {
-        return $query->orderBy('id', 'desc')->limit($limit)->with(['category']);
+        // return $query->orderBy('id', 'desc')->limit($limit)->with(['category']);
+        return $query->where('is_type', 1)
+            ->where('is_show_home', 1)
+            ->orderBy('id', 'desc')
+            ->limit($limit)
+            ->with(['category']);
     }
 
     public function scopeBestsellerProducts($query, $limit)

@@ -20,7 +20,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 'phone', 'address', 'email', 'username', 'password', 'image','role'
+        'name', 'phone', 'address', 'email', 'username', 'password', 'image', 'role'
     ];
 
     /**
@@ -49,5 +49,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Roles::class); //$this đại diện cho thể hiện hiện tại của lớp Product
         //Phương thức belongsTo của Eloquent ORM được sử dụng để xác định mối quan hệ "belongs to" (thuộc về) giữa mô hình Product và mô hình Category.
+    }
+    public function bills()
+    {
+        return $this->hasMany(Bills::class, 'account_id');
     }
 }

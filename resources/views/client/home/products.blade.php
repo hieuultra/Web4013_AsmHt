@@ -125,13 +125,13 @@
           <div class="col-12 pb-1">
             <div class="d-flex align-items-center justify-content-between mb-4">
               <!-- Search -->
-              <form action="index.php?act=search_pro" method="post">
+              <form action="{{ route('products.search') }}" method="GET">
                 <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Search by name" name="kyw" />
+                  <input type="text" class="form-control" placeholder="Search by name" name="query" />
                   <div class="input-group-append">
                     <span class="input-group-text bg-transparent text-primary">
                       <!-- <i class="fa fa-search"></i> -->
-                      <input type="submit" class="btn btn-primary" value="SEARCH" name="search">
+                      <input type="submit" class="btn btn-primary" value="SEARCH">
                     </span>
                   </div>
                 </div>
@@ -183,9 +183,9 @@
                     </a>
                     <div class="d-flex justify-content-center">
                       <h6>
-                        {{ number_format($tt, 0, ",", ".")  }} VND
+                        {{ number_format($tt, 0, ",", ".")  }} $
                       </h6>
-                      <h6 class="text-muted ml-2"><del>{{ number_format($item->price,0,',','.') }} VNĐ</del></h6>
+                      <h6 class="text-muted ml-2"><del>{{ number_format($item->price,0,',','.') }} $</del></h6>
                     </div>
                     <div class="d-flex align-items-center justify-content-center mb-1">
                       <small class="fa fa-star text-primary mr-1"></small>
@@ -198,11 +198,10 @@
                   </div>
                   <div class="card-footer d-flex justify-content-between bg-light border">
                     <a href="{{ route('productDetail', $item->id) }}" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                    <form action="addtocart" method="post">
-                        <input type="hidden" name="id" value="{{$item->id}}">
-                            <input type="hidden" name="name" value="{{$item->name}}">
-                            <input type="hidden" name="img" value="{{$item->img}}">
-                            <input type="hidden" name="price" value="{{$item->price}}">
+                    <form action="{{ route('cart.addCart') }}" method="post">
+                        @csrf
+                            <input type="hidden" name="quantity" value="1">
+                           <input type="hidden" name="productId" value="{{ $item->id }}">
                         <input type="submit" value="Add To Cart" class="btn btn-sm text-dark p-0" name="addtocart"><i class="fas fa-shopping-cart text-primary mr-1"></i>
                     </form>
                   </div>

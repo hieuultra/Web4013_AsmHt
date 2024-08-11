@@ -116,6 +116,28 @@
   </div>
   <!-- Featured End -->
 
+  <!-- Categories Start -->
+<div class="container-fluid pt-5">
+    <div class="row px-xl-5 pb-3">
+        @foreach($categories as $category)
+         <div class="col-lg-2 col-md-6 pb-1">
+          <a class="text-decoration-none" href="">
+          <div class="cat-item d-flex align-items-center mb-4">
+              <div class="overflow-hidden" style="width: 100px; height: 100px;">
+              <a href="{{ route('productsByCategoryId', $category->id) }}"> <img class="img-fluid" src="{{ asset('upload/'. $category->img) }}" alt=""></a>
+              </div>
+              <div class="flex-fill pl-3">
+                  <h6>{{ $category->name }}</h6>
+                  <small class="text-body">{{ $category->products_count }} Products</small>
+              </div>
+          </div>
+      </a>
+      </div>
+      @endforeach
+    </div>
+  </div>
+  <!-- Categories End -->
+
   <!-- Offer Start -->
 <div class="container-fluid offer pt-5">
     <div class="row px-xl-5">
@@ -168,13 +190,13 @@
         <div class="col-12 pb-1">
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <!-- Search -->
-                <form action="index.php?act=search_pro" method="post">
+                <form action="{{ route('products.search') }}" method="GET">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search by name" name="kyw" />
+                        <input type="text" class="form-control" name="query" placeholder="Search by name"/>
                         <div class="input-group-append">
                             <span class="input-group-text bg-transparent text-primary">
                                 <!-- <i class="fa fa-search"></i> -->
-                                <input type="submit" class="btn btn-primary" value="SEARCH" name="search">
+                                <input type="submit" class="btn btn-primary" value="SEARCH">
                             </span>
                         </div>
                     </div>
